@@ -844,6 +844,18 @@ input,textarea{
             <span style="display:inline-block; margin-left:15px;">
                 <a href="https://trust-digital-khaki.vercel.app/" style="color:#a855f7; text-decoration:underline;">Kenali Pengasas</a>
             </span>
+            <span style="display:inline-block; margin-left:15px;">
+                <a href="#shipping" style="color:#a855f7; text-decoration:underline;">Shipping Policy</a>
+            </span>
+            <span style="display:inline-block; margin-left:15px;">
+                <a href="#terms" style="color:#a855f7; text-decoration:underline;">Terms and Conditions</a>
+            </span>
+            <span style="display:inline-block; margin-left:15px;">
+                <a href="#cancellation" style="color:#a855f7; text-decoration:underline;">Cancellation and Refund Policy</a>
+            </span>
+            <span style="display:inline-block; margin-left:15px;">
+                <a href="#" id="contactUsLink" onclick="openContactUs(event)" style="color:#a855f7; text-decoration:underline; cursor:pointer;">Contact Us</a>
+            </span>
         </div>
     </div>
 
@@ -855,6 +867,45 @@ input,textarea{
             <p>Developer tidak dapat melihat password pengguna kerana kata laluan disimpan dalam bentuk terenkripsi.</p>
             <p>Pengguna bertanggungjawab menjaga keselamatan email dan password akaun mereka.</p>
             <p>Sila simpan maklumat log masuk anda dengan selamat. Jika terlupa kata laluan, gunakan fungsi "Forgot Password" untuk membuat tetapan semula melalui email berdaftar.</p>
+            <div style="margin-top:30px; text-align:right;">
+                <a href="#" onclick="navigateHome(); return false;" style="color:#a855f7; text-decoration:underline; font-weight:600;">Kembali ke Aplikasi</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="shippingPage" class="main-card hidden" style="margin:45px auto; max-width:900px;">
+        <div class="section-header">Shipping Policy</div>
+        <div class="content" style="padding:40px; line-height:1.8; font-size:1rem; color:#d8b4fe;">
+            <p>MY PLATFORM DATA adalah produk digital dan tidak melibatkan penghantaran fizikal.</p>
+            <p>Selepas pembayaran berjaya disahkan, akses kepada aplikasi atau lesen penggunaan akan diberikan secara digital melalui sistem yang disediakan.</p>
+            <p>Tiada produk fizikal akan dihantar ke alamat pelanggan. Pelanggan hanya memerlukan sambungan internet untuk mengakses aplikasi.</p>
+            <div style="margin-top:30px; text-align:right;">
+                <a href="#" onclick="navigateHome(); return false;" style="color:#a855f7; text-decoration:underline; font-weight:600;">Kembali ke Aplikasi</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="termsPage" class="main-card hidden" style="margin:45px auto; max-width:900px;">
+        <div class="section-header">Terms and Conditions</div>
+        <div class="content" style="padding:40px; line-height:1.8; font-size:1rem; color:#d8b4fe;">
+            <p>Dengan menggunakan MY PLATFORM DATA, pengguna bersetuju dengan terma penggunaan berikut:</p>
+            <p><strong>1. Akses Produk</strong><br>MY PLATFORM DATA menyediakan akses digital kepada sistem pengurusan data peribadi. Selepas pembayaran berjaya, pengguna akan menerima akses premium berdasarkan pelan yang dipilih.</p>
+            <p><strong>2. Penggunaan Sistem</strong><br>Pengguna bertanggungjawab menjaga keselamatan akaun mereka dan tidak berkongsi akses secara tidak dibenarkan.</p>
+            <p><strong>3. Data Pengguna</strong><br>Data yang disimpan dalam aplikasi adalah milik pengguna. Pengguna bertanggungjawab memastikan maklumat yang dimasukkan adalah tepat dan selamat.</p>
+            <p><strong>4. Hak Cipta</strong><br>Semua hak cipta, reka bentuk, dan sistem aplikasi MY PLATFORM DATA adalah milik pembangun asal. Pengguna diberikan hak penggunaan berdasarkan lesen yang dibeli.</p>
+            <p><strong>5. Had Perkhidmatan</strong><br>Aplikasi disediakan berdasarkan keadaan sistem semasa. Sebarang gangguan pihak ketiga seperti internet atau perkhidmatan cloud adalah di luar kawalan pembangun.</p>
+            <div style="margin-top:30px; text-align:right;">
+                <a href="#" onclick="navigateHome(); return false;" style="color:#a855f7; text-decoration:underline; font-weight:600;">Kembali ke Aplikasi</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="cancellationPage" class="main-card hidden" style="margin:45px auto; max-width:900px;">
+        <div class="section-header">Cancellation and Refund Policy</div>
+        <div class="content" style="padding:40px; line-height:1.8; font-size:1rem; color:#d8b4fe;">
+            <p>MY PLATFORM DATA adalah produk digital yang memberikan akses serta-merta selepas pembayaran disahkan.</p>
+            <p>Disebabkan sifat produk digital yang boleh digunakan selepas pembelian, semua pembelian adalah muktamad dan tiada pemulangan wang (refund) selepas akses premium diberikan.</p>
+            <p>Sekiranya pengguna menghadapi masalah berkaitan akses atau teknikal, pengguna boleh menghubungi pihak sokongan untuk mendapatkan bantuan.</p>
             <div style="margin-top:30px; text-align:right;">
                 <a href="#" onclick="navigateHome(); return false;" style="color:#a855f7; text-decoration:underline; font-weight:600;">Kembali ke Aplikasi</a>
             </div>
@@ -1859,19 +1910,45 @@ function toggleAuthPassword() {
 
 function handleHashChange() {
     const privacyPage = document.getElementById('privacyPage');
+    const shippingPage = document.getElementById('shippingPage');
+    const termsPage = document.getElementById('termsPage');
+    const cancellationPage = document.getElementById('cancellationPage');
     const mainApp = document.getElementById('mainAppContent');
-    if (!privacyPage || !mainApp) return;
-    if (location.hash === '#privacy') {
-        mainApp.classList.add('hidden');
-        privacyPage.classList.remove('hidden');
-    } else {
-        privacyPage.classList.add('hidden');
-        mainApp.classList.remove('hidden');
+    if (!mainApp) return;
+
+    const showPrivacy = location.hash === '#privacy';
+    const showShipping = location.hash === '#shipping';
+    const showTerms = location.hash === '#terms';
+    const showCancellation = location.hash === '#cancellation';
+
+    if (privacyPage) {
+        privacyPage.classList.toggle('hidden', !showPrivacy);
     }
+
+    if (shippingPage) {
+        shippingPage.classList.toggle('hidden', !showShipping);
+    }
+
+    if (termsPage) {
+        termsPage.classList.toggle('hidden', !showTerms);
+    }
+
+    if (cancellationPage) {
+        cancellationPage.classList.toggle('hidden', !showCancellation);
+    }
+
+    mainApp.classList.toggle('hidden', showPrivacy || showShipping || showTerms || showCancellation);
 }
 
 function navigateHome() {
     location.hash = '';
+}
+
+function openContactUs(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    window.location.href = 'mailto:heremybusiness889@gmail.com?subject=Inquiry%20MY%20PLATFORM%20DATA';
 }
         // Initialize
         window.onload = async () => {
