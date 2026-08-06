@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY PLATFORM DATA • Secure Vault</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="https://i.postimg.cc/j5rYc59G/44-real.png">
+    <meta name="backend-api-url" content="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --bg: #0f0a1f;
+            --card: #1a1433;
+            --text: #f3e8ff;
+            --accent: #c4b5fd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f0a1f 0%, #1a1433 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        #introSplash {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at center, rgba(124, 58, 237, 0.25), rgba(15, 10, 31, 0.96) 70%);
+            backdrop-filter: blur(8px);
+            opacity: 1;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #introSplash.intro-fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #loginTransition {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            display: none;
+            place-items: center;
+            background: radial-gradient(circle at center, rgba(124, 58, 237, 0.24), rgba(15, 10, 31, 0.98) 75%);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        #loginTransition.active {
+            display: grid;
+        }
+
+        .transition-card {
+            position: relative;
+            display: grid;
+            place-items: center;
+            padding: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            animation: transitionAppear 0.9s ease forwards;
+        }
+
+        .transition-card img {
+            width: clamp(120px, 16vw, 220px);
+            border-radius: 0;
+            box-shadow: none;
+            background: transparent;
+            animation: transitionZoom 3s ease-in-out forwards, transitionGlow 3s ease-in-out alternate;
+        }
+
+        .transition-region {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .transition-region span {
+            position: absolute;
+            display: block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 18px rgba(124, 58, 237, 0.35);
+            animation: floatMove 3s ease-in-out infinite alternate;
+        }
+
+        .transition-region span:nth-child(1) { top: 15%; left: 20%; animation-delay: 0s; }
+        .transition-region span:nth-child(2) { top: 18%; right: 18%; animation-delay: 0.4s; }
+        .transition-region span:nth-child(3) { bottom: 20%; left: 18%; animation-delay: 0.7s; }
+        .transition-region span:nth-child(4) { bottom: 18%; right: 20%; animation-delay: 1.0s; }
+
+        .transition-region span:nth-child(5) { top: 50%; left: 8%; animation-delay: 1.3s; }
+        .transition-region span:nth-child(6) { top: 50%; right: 8%; animation-delay: 1.6s; }
+
+        .page-fade {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .page-fade-out {
+            opacity: 0.18;
+            transform: scale(0.98);
+        }
+
+        @keyframes transitionAppear {
+            from { opacity: 0; transform: scale(0.84); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes transitionZoom {
+            0% { transform: scale(0.92); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes transitionGlow {
+            0% { filter: drop-shadow(0 0 18px rgba(124, 58, 237, 0.25)); }
+            100% { filter: drop-shadow(0 0 36px rgba(124, 58, 237, 0.55)); }
+        }
+
+        @keyframes floatMove {
+            from { transform: translateY(0px) translateX(0px); opacity: 0.7; }
+            to { transform: translateY(8px) translateX(6px); opacity: 0.95; }
+        }
+
+        .splash-card {
+            display: grid;
+            place-items: center;
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
+            background: transparent;
+            transform: scale(0.92);
+            animation: splashAppear 1.4s ease forwards;
+        }
+
+        .splash-card img {
+            width: clamp(140px, 18vw, 260px);
+            max-width: 260px;
+            border-radius: 0;
+            box-shadow: none;
+            background: transparent;
+            animation: splashZoom 4.5s ease-in-out forwards, splashGlow 4.5s ease-in-out alternate;
+        }
+
+        @keyframes splashAppear {
+            from { opacity: 0; transform: scale(0.82); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes splashZoom {
+            0% { transform: scale(0.98); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(0.92); }
+        }
+
+        @keyframes splashGlow {
+            0% { filter: drop-shadow(0 0 12px rgba(124, 58, 237, 0.45)); }
+            100% { filter: drop-shadow(0 0 30px rgba(124, 58, 237, 0.65)); }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .logo span {
+            font-size: 3.4rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .site-logo {
+            width: clamp(80px, 9vw, 120px);
+            height: auto;
+            display: block;
+            background: transparent;
+            box-shadow: none;
+            border: none;
+            border-radius: 0;
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 70px;
+            margin: 35px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: var(--card);
+            padding: 28px 50px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.25);
+            border: 1px solid rgba(192, 132, 252, 0.2);
+            min-width: 190px;
+        }
+
+        .stat-number {
+            font-size: 3.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .main-card {
+            background: var(--card);
+            border-radius: 28px;
+            box-shadow: 0 25px 70px rgba(124, 58, 237, 0.3);
+            border: 1px solid rgba(192, 132, 252, 0.3);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        /* Auth form specific layout to keep Register/Login tidy */
+        .auth-card .content {
+            padding: 28px 36px;
+        }
+
+        #authForm {
+            max-width: 720px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        #authForm .form-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        #authForm input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #authForm .actions {
+            display:flex;
+            gap:12px;
+            justify-content:center;
+            flex-wrap:wrap;
+            margin-top:12px;
+        }
+
+        #authForm .actions .btn {
+            min-width:140px;
+            padding:12px 26px;
+        }
+
+
+        .section-header {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 24px 35px;
+            font-size: 1.45rem;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 17px 24px;
+            border: 2px solid rgba(192, 132, 252, 0.3);
+            border-radius: 16px;
+            background: rgba(26, 20, 51, 0.8);
+            color: var(--text);
+            font-size: 1.05rem;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.3);
+            outline: none;
+        }
+
+        .btn {
+            padding: 16px 36px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary), #a855f7);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.5);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 20px 25px 20px 65px;
+            border: 2px solid rgba(192, 132, 252, 0.3);
+            border-radius: 50px;
+            background: rgba(26, 20, 51, 0.8);
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(124, 58, 237, 0.2);
+            padding: 22px 18px;
+            text-align: left;
+            color: var(--accent);
+        }
+
+        td {
+            padding: 24px 18px;
+            border-bottom: 1px solid rgba(192, 132, 252, 0.15);
+        }
+
+        tr:hover {
+            background: rgba(124, 58, 237, 0.15);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .dashboard-only.hidden {
+            display: none !important;
+        }
+
+        .record-cards {
+            display: none;
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .record-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(192, 132, 252, 0.25);
+            border-radius: 24px;
+            padding: 22px;
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.12);
+        }
+
+        .record-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: var(--accent);
+        }
+
+        .record-card p {
+            margin-bottom: 10px;
+            line-height: 1.55;
+            color: #d8b4fe;
+        }
+
+        .record-card .card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .record-card button {
+            min-width: 110px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+        }
+
+        .stat-card.compact {
+            padding: 22px 18px;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .stat-card.compact .stat-number {
+            font-size: 1.35rem;
+            line-height: 1.2;
+        }
+
+        .profile-label {
+            color: #d8b4fe;
+            margin-top: 8px;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+        }
+
+        .edit-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            background: #f43f5e;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .theme-btn {
+            padding: 12px 32px;
+            background: linear-gradient(90deg, var(--primary), #a855f7);
+            color: white;a
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 45px 20px;
+            color: #c4b5fd;
+            font-size: 1.05rem;
+        }
+
+        /* MOBILE RESPONSIVE */
+
+@media (max-width:768px){
+
+body{
+    padding:15px;
+}
+
+
+.logo{
+    font-size:2rem;
+    flex-direction:column;
+    text-align:center;
+}
+
+
+.header-stats{
+    gap:15px;
+    margin:20px 0;
+}
+
+
+.stat-card{
+    width:100%;
+    padding:20px;
+}
+
+
+.content{
+    padding:20px;
+}
+
+
+.form-grid{
+    grid-template-columns:1fr;
+    gap:18px;
+}
+
+
+.btn{
+    width:100%;
+    margin:8px 0 !important;
+}
+
+
+.search-input{
+    padding:16px 20px;
+}
+
+
+/* TABLE BOLEH SCROLL */
+
+.main-card{
+    overflow:hidden;
+}
+
+
+table{
+    min-width:800px;
+}
+
+
+.content{
+    overflow-x:auto;
+}
+
+
+.section-header{
+    font-size:1.1rem;
+    padding:18px;
+}
+
+
+}
+
+
+/* HP KECIL */
+
+@media(max-width:480px){
+
+.logo{
+    font-size:1.6rem;
+}
+
+
+.stat-number{
+    font-size:2.8rem;
+}
+
+
+input,textarea{
+    font-size:16px;
+}
+
+
+.delete-btn{
+    padding:8px 15px;
+}
+
+        .content table,
+        .content thead,
+        .content tbody,
+        .content th,
+        .content td,
+        .content tr {
+            display: block;
+        }
+
+        .content thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        .content tr {
+            margin-bottom: 18px;
+        }
+
+        .content td {
+            border: none;
+            position: relative;
+            padding-left: 50%;
+            text-align: left;
+        }
+
+        .content td:before {
+            position: absolute;
+            top: 14px;
+            left: 18px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            font-weight: 700;
+            color: var(--accent);
+            content: attr(data-label);
+        }
+
+        .record-cards {
+            display: grid;
+        }
+
+        .content table {
+            display: none;
+        }
+
+}
+    </style>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div id="introSplash">
+        <div class="splash-card">
+            <img src="https://i.postimg.cc/j5rYc59G/44-real.png" alt="MY PLATFORM DATA Logo Intro">
+        </div>
+    </div>
+    <div id="loginTransition">
+        <div class="transition-card">
+            <img src="https://i.postimg.cc/j5rYc59G/44-real.png" alt="MY PLATFORM DATA Transition">
+            <div class="transition-region">
+                <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+    <div id="mainAppContent" class="container hidden">
+        <header>
+            <div class="logo">
+                <img src="https://i.postimg.cc/j5rYc59G/44-real.png" alt="MY PLATFORM DATA Logo" class="site-logo">
+                <span>MY PLATFORM DATA</span>
+            </div>
+            <p style="color:#c4b5fd; font-size:1.2rem; margin-top:10px;">
+                 Simpan, urus dan lindungi maklumat penting anda dalam satu tempat.
+            </p>
+
+            <div class="header-stats dashboard-only hidden">
+                <div class="stat-card">
+                    <div class="stat-number" id="recordCount">0</div>
+                    <div>Jumlah Rekod</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="currentDate">7/23/2026</div>
+                    <div>Tarikh Langsung</div>
+                </div>
+            </div>
+            <div class="header-stats dashboard-only hidden" style="justify-content:center; gap:20px; margin-top:15px;">
+                <div class="stat-card" style="min-width:260px; text-align:center;">
+                    <div id="premiumStatus" style="font-size:1rem; color:#c4b5fd; font-weight:700;">🚀 Demo Version - Had 3 Rekod</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Theme -->
+        <div class="main-card dashboard-only hidden">
+            <div class="section-header">🎨 Tema & Salin</div>
+            <div class="content" style="text-align:center; gap: 15px; display: flex; justify-content: center; flex-wrap: wrap;">
+                <button class="theme-btn" onclick="setTheme('purple')">
+                    <i class="fas fa-palette"></i> Purple
+                </button>
+                <button class="btn btn-primary" style="border-radius: 24px; padding: 16px 28px;" onclick="copyAllData()">
+                    <i class="fas fa-copy"></i> Salin Semua Data
+                </button>
+            </div>
+        </div>
+
+        <div class="main-card auth-card">
+            <div class="section-header" style="text-align:center;">Login & Keselamatan Akaun</div>
+            <div class="content" style="display:grid; gap:16px;">
+                <div id="authForm" class="auth-only">
+                    <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                        <div>
+                            <label>Email Akaun</label>
+                            <input type="email" id="authEmail" placeholder="Email untuk login/register">
+                        </div>
+                        <div style="position:relative;">
+                            <label>Password Akaun</label>
+                            <input type="password" id="authPassword" placeholder="Password untuk auth" style="padding-right:50px; width:100%;">
+                            <button type="button" id="toggleAuthPasswordBtn" onclick="toggleAuthPassword()" style="position:absolute; right:15px; top:54%; transform:translateY(-54%); border:none; background:none; cursor:pointer; font-size:18px; color:#c4b5fd;">👁</button>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-primary" id="registerBtn" onclick="registerUser()">Register</button>
+                        <button class="btn btn-primary" id="loginBtn" onclick="loginUser()">Login</button>
+                    </div>
+                    <div style="text-align:center; margin-top:12px;">
+                        <a href="#" id="forgotPasswordLink" onclick="forgotPassword(); return false;" style="color:#a855f7; text-decoration:underline; font-weight:600;">Forgot Password?</a>
+                    </div>
+                </div>
+                <div id="authNotice" style="margin:14px auto 0; color:#fef3c7; background:rgba(255,255,255,0.02); padding:12px; border-radius:10px; font-size:0.95rem; line-height:1.45; text-align:center; max-width:720px;">
+                     Pastikan email dan password anda betul. Email yang telah didaftarkan tidak boleh digunakan semula. Gunakan Forgot Password jika terlupa kata laluan. ⚠️
+                </div>
+                <div id="logoutPanel" class="logout-only hidden" style="text-align:center; gap:12px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                    <div id="authStatus" style="color:#c4b5fd; font-weight:700;">Belum login</div>
+                    <button class="btn" id="logoutBtn" onclick="logoutUser()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboardSections" class="dashboard-only hidden">
+            <div class="main-card">
+                <div class="section-header">Profil Pengguna & Cloud Status</div>
+            <div class="content profile-grid">
+                <div class="stat-card compact">
+                    <div class="stat-number" id="cloudStatus">🔴 Offline Mode</div>
+                    <div class="profile-label">Cloud Status</div>
+                </div>
+                <div class="stat-card compact">
+                    <div class="stat-number" id="profileEmail">Guest</div>
+                    <div class="profile-label">Email Pengguna</div>
+                </div>
+                <div class="stat-card compact">
+                    <div class="stat-number" id="cloudRecordCount">0</div>
+                    <div class="profile-label">Jumlah Rekod Cloud</div>
+                </div>
+                <div class="stat-card compact">
+                    <div class="stat-number" id="profilePremiumStatus">Demo</div>
+                    <div class="profile-label">Status Premium</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Tambah Rekod Baru -->
+        <div class="main-card dashboard-only hidden">
+            <div class="section-header">Tambah Rekod Baru</div>
+            <div class="content">
+                <div class="form-grid">
+                    <div>
+                    <label>Email / Phone</label>
+                        <input type="text" id="email" placeholder="contoh@email.com atau +60123456789">
+                    </div>
+                    <div>
+                        <label>Platform / Servis</label>
+                        <input type="text" id="platform" placeholder="Gmail, Netflix, Bank, etc">
+                    </div>
+                   <div>
+    <label>Password</label>
+
+    <div style="position:relative;">
+
+        <input 
+        type="password" 
+        id="password" 
+        placeholder="••••••••"
+        style="padding-right:60px;"
+        >
+
+        <button 
+        type="button"
+        onclick="toggleInputPassword()"
+        id="showPasswordBtn"
+        style="
+        position:absolute;
+        right:15px;
+        top:50%;
+        transform:translateY(-50%);
+        border:none;
+        background:none;
+        cursor:pointer;
+        font-size:22px;
+        color:#c4b5fd;
+        ">
+        👁
+        </button>
+
+    </div>
+
+</div>
+                    <div>
+                        <label>Tarikh Tamat (mm/dd/yyyy)</label>
+                        <input type="date" id="expiry">
+                    </div>
+                    <div>
+                        <label>Nota</label>
+                        <textarea id="note" rows="3" placeholder="Catatan atau hint penting..."></textarea>
+                    </div>
+                </div>
+
+                <div style="margin-top: 35px; text-align: right;">
+                    <button id="resetFormBtn" class="btn" style="background:#4c1d95; color:white; margin-right:15px;" onclick="resetForm()">Reset</button>
+                    <button id="addRecordBtn" class="btn btn-primary" onclick="addRecord()">Tambah Data</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cari Data -->
+        <div class="main-card dashboard-only hidden">
+            <div class="section-header">Cari Data</div>
+            <div class="content">
+                <input type="text" id="searchInput" class="search-input" 
+                       placeholder="Cari Email, Platform atau Nota..." onkeyup="filterRecords()">
+            </div>
+        </div>
+
+        <!-- Semua Rekod -->
+        <div class="main-card dashboard-only hidden">
+            <div class="section-header">Semua Rekod (<span id="filteredCount">0</span>)</div>
+            <div class="content">
+                <table id="recordsTable">
+                    <thead>
+                        <tr>
+                            <th>Email / Phone</th>
+                            <th>Platform</th>
+                            <th>Password</th>
+                            <th>Tarikh</th>
+                            <th>Nota</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+                <div id="recordCards" class="record-cards"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2026 MY PLATFORM DATA • Data anda disimpan secara selamat dengan sistem cloud terenkripsi
+            <span style="display:inline-block; margin-left:15px;">
+                <a href="#privacy" style="color:#a855f7; text-decoration:underline;">Privacy Policy</a>
+            </span>
+        </div>
+    </div>
+
+    <div id="privacyPage" class="main-card hidden" style="margin:45px auto; max-width:900px;">
+        <div class="section-header">Privacy Policy</div>
+        <div class="content" style="padding:40px; line-height:1.8; font-size:1rem; color:#d8b4fe;">
+            <p>MY PLATFORM DATA menyimpan data pengguna menggunakan Supabase sebagai pangkalan data awan.</p>
+            <p>Password disulitkan sebelum disimpan ke dalam pangkalan data, jadi ia tidak disimpan dalam bentuk teks biasa.</p>
+            <p>Developer tidak dapat melihat password pengguna kerana kata laluan disimpan dalam bentuk terenkripsi.</p>
+            <p>Pengguna bertanggungjawab menjaga keselamatan email dan password akaun mereka.</p>
+            <p>Sila simpan maklumat log masuk anda dengan selamat. Jika terlupa kata laluan, gunakan fungsi "Forgot Password" untuk membuat tetapan semula melalui email berdaftar.</p>
+            <div style="margin-top:30px; text-align:right;">
+                <a href="#" onclick="navigateHome(); return false;" style="color:#a855f7; text-decoration:underline; font-weight:600;">Kembali ke Aplikasi</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let records = [];
+        let editingId = null;
+        let premiumUser = false;
+        let pendingRecord = null;
+        let currentUser = null;
+
+        // SUPABASE DATABASE CONNECTION
+        // TABLE myplatform_records: id uuid, email_phone, platform, password_data, expiry, note, created_at
+        const SUPABASE_URL = 'https://rptclztrmprcxjbolkrt.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwdGNsenRybXByY3hqYm9sa3J0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNzY5NjgsImV4cCI6MjEwMDk1Mjk2OH0.uS1evu_z-eS7wJymgQZ7K8f3kviruWDvwZEkqElx_5s';
+        // Create the Supabase client from the global window.supabase provided by the CDN.
+        const client = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+
+        const backendMeta = document.querySelector('meta[name="backend-api-url"]');
+        const BACKEND_URL = (() => {
+            if (typeof BACKEND_API_URL !== 'undefined' && BACKEND_API_URL) {
+                return BACKEND_API_URL;
+            }
+            if (backendMeta && backendMeta.content) {
+                return backendMeta.content;
+            }
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
+                return 'http://127.0.0.1:3000';
+            }
+            return window.location.origin;
+        })();
+
+        window.addEventListener('error', event => {
+            console.error('[frontend] uncaught error', event.error || event.message, {
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno
+            });
+        });
+
+        window.addEventListener('unhandledrejection', event => {
+            console.error('[frontend] unhandledrejection', event.reason);
+        });
+
+        // useSupabase will be tested on startup; false = fallback to LocalStorage
+        let useSupabase = false;
+
+        function setTheme(theme) {
+            // Currently locked to purple as requested
+            alert("Theme Purple Premium telah aktif ✓");
+        }
+
+        // Premium state helper
+        function getPremiumStatus() {
+            return localStorage.getItem('premiumUser') === 'true';
+        }
+
+        // Check premium access on app load and before adding records
+        function checkPremiumStatus() {
+            premiumUser = getPremiumStatus();
+            updatePremiumStatusDisplay();
+            return premiumUser;
+        }
+
+        // Unlock premium access and persist in localStorage
+        function unlockPremium() {
+            localStorage.setItem('premiumUser', 'true');
+            premiumUser = true;
+            updatePremiumStatusDisplay();
+        }
+
+        async function checkPremiumStatusFromDatabase() {
+            if (!useSupabase || !currentUser || !currentUser.id) {
+                console.log('[premium] checkPremiumStatusFromDatabase skipped', {
+                    useSupabase,
+                    currentUserId: currentUser?.id
+                });
+                return false;
+            }
+            try {
+                const { data, error } = await client.from('premium_users')
+                    .select('premium_status')
+                    .eq('user_id', currentUser.id)
+                    .maybeSingle();
+
+                console.log('[premium] checkPremiumStatusFromDatabase response', { data, error });
+                if (error) throw error;
+
+                const isPremium = Boolean(data?.premium_status);
+                premiumUser = isPremium;
+                localStorage.setItem('premiumUser', isPremium ? 'true' : 'false');
+                updatePremiumStatusDisplay();
+                return isPremium;
+            } catch (err) {
+                console.error('[premium] checkPremiumStatusFromDatabase error', err);
+                return false;
+            }
+        }
+
+        async function savePremiumStatusToDatabase(paymentResponse = null) {
+            if (!useSupabase || !currentUser || !currentUser.id) {
+                console.log('[premium] savePremiumStatusToDatabase skipped because no Supabase or no current user', {
+                    useSupabase,
+                    currentUserId: currentUser?.id
+                });
+                return null;
+            }
+            try {
+                const payload = {
+                    user_id: currentUser.id,
+                    premium_status: true,
+                    payment_id: paymentResponse?.razorpay_payment_id || paymentResponse?.payment_id || null
+                };
+                console.log('[premium] savePremiumStatusToDatabase payload', payload);
+
+                let { data, error } = await client.from('premium_users')
+                    .insert([payload])
+                    .select()
+                    .single();
+
+                console.log('[premium] savePremiumStatusToDatabase insert response', { data, error });
+
+                if (error) {
+                    const duplicateError = String(error.message || error.details || '').toLowerCase().includes('duplicate') || error.code === '23505';
+                    if (duplicateError) {
+                        console.log('[premium] savePremiumStatusToDatabase duplicate detected, updating existing row');
+                        const updatePayload = {
+                            premium_status: true,
+                            payment_id: payload.payment_id
+                        };
+                        const updateResult = await client.from('premium_users')
+                            .update(updatePayload)
+                            .eq('user_id', currentUser.id)
+                            .select()
+                            .single();
+                        console.log('[premium] savePremiumStatusToDatabase update response', updateResult);
+                        if (updateResult.error) throw updateResult.error;
+                        return updateResult.data;
+                    }
+                    throw error;
+                }
+
+                return data;
+            } catch (err) {
+                console.error('[premium] savePremiumStatusToDatabase error', err);
+                return null;
+            }
+        }
+
+        const ENCRYPTION_PREFIX = 'AESGCM:';
+        const ENCRYPTION_KEY_CONTEXT = 'MY_PLATFORM_DATA_ENCRYPTION_V2';
+        const LEGACY_ENCRYPTION_KEY_SECRET = 'MY_PLATFORM_DATA_LEVEL1_1_SECRET';
+
+        async function getCryptoKey(userId) {
+            if (!userId) return null;
+            const encoder = new TextEncoder();
+            const keyMaterial = await crypto.subtle.digest('SHA-256', encoder.encode(`${userId}:${ENCRYPTION_KEY_CONTEXT}`));
+            return crypto.subtle.importKey('raw', keyMaterial, 'AES-GCM', false, ['encrypt', 'decrypt']);
+        }
+
+        async function getLegacyCryptoKey() {
+            const encoder = new TextEncoder();
+            const keyMaterial = await crypto.subtle.digest('SHA-256', encoder.encode(LEGACY_ENCRYPTION_KEY_SECRET));
+            return crypto.subtle.importKey('raw', keyMaterial, 'AES-GCM', false, ['encrypt', 'decrypt']);
+        }
+
+
+        function arrayBufferToBase64(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binary = atob(base64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        async function encryptPassword(plainText) {
+            if (!plainText) return '';
+            const userId = currentUser?.id;
+            const key = await getCryptoKey(userId);
+            if (!key) return '';
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encoder = new TextEncoder();
+            const encoded = encoder.encode(plainText);
+            const cipherBuffer = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded);
+            const ivBase64 = arrayBufferToBase64(iv);
+            const cipherBase64 = arrayBufferToBase64(cipherBuffer);
+            const encrypted = `${ENCRYPTION_PREFIX}${ivBase64}:${cipherBase64}`;
+            return encrypted;
+        }
+
+        async function decryptPassword(cipherText) {
+            if (!cipherText || typeof cipherText !== 'string' || !cipherText.startsWith(ENCRYPTION_PREFIX)) {
+                return cipherText || '';
+            }
+            const payload = cipherText.slice(ENCRYPTION_PREFIX.length);
+            const [ivBase64, dataBase64] = payload.split(':');
+            const iv = new Uint8Array(base64ToArrayBuffer(ivBase64));
+            const cipherBuffer = base64ToArrayBuffer(dataBase64);
+
+            if (currentUser && currentUser.id) {
+                try {
+                    const key = await getCryptoKey(currentUser.id);
+                    const plainBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipherBuffer);
+                    return new TextDecoder().decode(plainBuffer);
+                } catch (err) {
+                    // fall through to legacy key attempt
+                }
+            }
+
+            try {
+                const legacyKey = await getLegacyCryptoKey();
+                const plainBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, legacyKey, cipherBuffer);
+                return new TextDecoder().decode(plainBuffer);
+            } catch (err) {
+                return cipherText;
+            }
+        }
+
+        async function getPasswordForDisplay(value) {
+            return await decryptPassword(value);
+        }
+
+        // DEMO PAYMENT success handler
+        // LIVE PAYMENT TODO: validate response.server_signature on backend before unlocking.
+        // BACKEND VERIFICATION TODO: perform server-side verification of Razorpay payment details.
+        async function handlePaymentSuccess(response) {
+            console.log('[premium] handlePaymentSuccess start', {
+                useSupabase,
+                currentUserId: currentUser?.id,
+                response
+            });
+
+            if (!currentUser || !currentUser.id) {
+                alert('Sila login terlebih dahulu sebelum membuat pembayaran.');
+                return;
+            }
+
+            try {
+                console.log('[premium] verify-payment payload', {
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    currentUserId: currentUser.id
+                });
+
+                const verifyResponse = await fetch(`${BACKEND_URL}/verify-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                        currentUserId: currentUser.id
+                    })
+                });
+
+                const verifyData = await verifyResponse.json();
+                console.log('[premium] verify-payment response', {
+                    ok: verifyResponse.ok,
+                    status: verifyResponse.status,
+                    body: verifyData
+                });
+
+                if (!verifyResponse.ok || !verifyData.verified) {
+                    alert('Pembayaran tidak dapat disahkan. Sila cuba lagi.');
+                    pendingRecord = null;
+                    return;
+                }
+
+                unlockPremium();
+            } catch (err) {
+                console.error('[premium] verify-payment exception', err);
+                alert('Ralat semasa mengesahkan pembayaran. Sila cuba lagi.');
+                pendingRecord = null;
+                return;
+            }
+
+            if (pendingRecord) {
+                const encryptedPassword = await encryptPassword(pendingRecord.password);
+                const newRecord = {
+                    ...pendingRecord,
+                    id: Date.now().toString(),
+                    password: encryptedPassword
+                };
+                records.unshift(newRecord);
+                pendingRecord = null;
+                saveRecords();
+
+                if (useSupabase && currentUser && currentUser.id) {
+                    const dbRecord = await saveRecordToDatabase(newRecord);
+                    if (dbRecord && dbRecord.id) {
+                        newRecord.id = dbRecord.id;
+                        saveRecords();
+                    }
+                }
+
+                resetForm();
+            }
+            alert('Tahniah! Lifetime Access telah aktif.');
+        }
+
+        async function loadRecords() {
+            if (useSupabase) {
+                const ok = await loadRecordsFromDatabase();
+                if (ok) return;
+            }
+
+            const saved = localStorage.getItem('remindAllData');
+            records = saved ? JSON.parse(saved) : [];
+            checkPremiumStatus();
+            renderTable();
+        }
+
+        function saveRecords() {
+            localStorage.setItem('remindAllData', JSON.stringify(records));
+            renderTable();
+            updateUserProfileDisplay();
+        }
+
+        function updatePremiumStatusDisplay() {
+            const statusElement = document.getElementById('premiumStatus');
+            if (!statusElement) return;
+            if (premiumUser) {
+                statusElement.textContent = '⭐ Lifetime Access Aktif';
+            } else {
+                statusElement.textContent = '🚀 Demo Version - Had 3 Rekod';
+            }
+            const premiumStatus = document.getElementById('profilePremiumStatus');
+            if (premiumStatus) {
+                premiumStatus.textContent = premiumUser ? 'Lifetime' : 'Demo';
+            }
+        }
+
+        function setCloudStatus(status) {
+            const statusElement = document.getElementById('cloudStatus');
+            if (!statusElement) return;
+            if (status === 'sync') {
+                statusElement.textContent = '🟡 Syncing...';
+            } else if (status === 'connected') {
+                statusElement.textContent = '🟢 Cloud Connected';
+            } else {
+                statusElement.textContent = '🔴 Offline Mode';
+            }
+        }
+
+
+        function updateUserProfileDisplay() {
+            const emailElement = document.getElementById('profileEmail');
+            const cloudCountElement = document.getElementById('cloudRecordCount');
+            if (emailElement) {
+                emailElement.textContent = currentUser?.email || 'Guest';
+            }
+            if (cloudCountElement) {
+                cloudCountElement.textContent = useSupabase ? records.length : '0';
+            }
+            updatePremiumStatusDisplay();
+        }
+
+        function updateAuthDisplay() {
+            const authStatus = document.getElementById('authStatus');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const authForm = document.getElementById('authForm');
+            const logoutPanel = document.getElementById('logoutPanel');
+            const dashboardSections = document.getElementById('dashboardSections');
+
+            if (!authStatus || !logoutBtn || !loginBtn || !registerBtn || !authForm || !logoutPanel || !dashboardSections) return;
+
+            if (currentUser && currentUser.id) {
+                authStatus.textContent = `Logged in sebagai ${currentUser.email || currentUser.id}`;
+                logoutBtn.disabled = false;
+                loginBtn.disabled = true;
+                registerBtn.disabled = true;
+                authForm.classList.add('hidden');
+                logoutPanel.classList.remove('hidden');
+                dashboardSections.classList.remove('hidden');
+                document.querySelectorAll('.dashboard-only').forEach(el => el.classList.remove('hidden'));
+            } else {
+                authStatus.textContent = 'Belum login';
+                logoutBtn.disabled = true;
+                loginBtn.disabled = false;
+                registerBtn.disabled = false;
+                authForm.classList.remove('hidden');
+                logoutPanel.classList.add('hidden');
+                dashboardSections.classList.add('hidden');
+                document.querySelectorAll('.dashboard-only').forEach(el => el.classList.add('hidden'));
+            }
+            updateUserProfileDisplay();
+        }
+
+        async function refreshCurrentUser() {
+            console.log('[premium] refreshCurrentUser start', { useSupabase });
+            try {
+                const { data, error } = await client.auth.getUser();
+                if (!error && data?.user) {
+                    currentUser = data.user;
+                } else {
+                    currentUser = null;
+                }
+                console.log('[premium] refreshCurrentUser auth result', {
+                    currentUserId: currentUser?.id,
+                    error: error ? error.message : null
+                });
+            } catch (err) {
+                currentUser = null;
+                console.error('[premium] refreshCurrentUser exception', err);
+            }
+
+            if (currentUser && currentUser.id) {
+                await testSupabaseConnection();
+            }
+
+            if (currentUser && currentUser.id && useSupabase) {
+                const premiumDb = await checkPremiumStatusFromDatabase();
+                console.log('[premium] refreshCurrentUser premiumDbStatus', premiumDb);
+            } else {
+                checkPremiumStatus();
+            }
+
+            updateAuthDisplay();
+            return currentUser;
+        }
+
+        async function registerUser() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+            if (!email || !password) return alert('Sila masukkan email dan password untuk daftar.');
+            const { data, error } = await client.auth.signUp({ email, password });
+            if (error) return alert('Register failed: ' + error.message);
+            currentUser = data.user;
+            updateAuthDisplay();
+            alert('Email sudah didaftarkan. Sila gunakan email lain.');
+            await refreshCurrentUser();
+            await loadRecords();
+        }
+
+        async function loginUser() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+            if (!email || !password) return alert('Sila masukkan email dan password untuk login.');
+            const { data, error } = await client.auth.signInWithPassword({ email, password });
+            if (error) return alert('Login failed: ' + error.message);
+            currentUser = data.user;
+            console.log('[premium] loginUser success', {
+                currentUserId: currentUser?.id,
+                email: currentUser?.email,
+                useSupabase
+            });
+            alert('Login berjaya.');
+            await refreshCurrentUser();
+            await loadRecords();
+            await showPostLoginTransition();
+            updateAuthDisplay();
+        }
+
+        async function showPostLoginTransition() {
+            const transition = document.getElementById('loginTransition');
+            const mainApp = document.getElementById('mainAppContent');
+            if (!transition || !mainApp) return;
+
+            mainApp.classList.add('page-fade');
+            setTimeout(() => mainApp.classList.add('page-fade-out'), 20);
+
+            transition.classList.add('active');
+            await new Promise(resolve => setTimeout(resolve, 2600));
+            transition.classList.remove('active');
+            mainApp.classList.remove('page-fade-out');
+        }
+
+        async function forgotPassword() {
+            const email = document.getElementById('authEmail').value.trim();
+            if (!email) {
+                alert('Sila masukkan email anda untuk reset password.');
+                document.getElementById('authEmail').focus();
+                return;
+            }
+            const { data, error } = await client.auth.resetPasswordForEmail(email);
+            if (error) return alert('Reset password gagal: ' + error.message);
+            alert('Reset password link telah dihantar ke email anda.');
+        }
+
+        async function logoutUser() {
+            const { error } = await client.auth.signOut();
+            if (error) return alert('Logout failed: ' + error.message);
+            currentUser = null;
+            updateAuthDisplay();
+            alert('Logout berjaya.');
+            await loadRecords();
+        }
+
+        // No login: use anonymous/anon key to access `myplatform_records`.
+        // We'll test connectivity on startup and enable useSupabase accordingly.
+        async function testSupabaseConnection() {
+            try {
+                const { data, error } = await client.from('myplatform_records').select('id').limit(1);
+                console.log('[premium] testSupabaseConnection result', { data, error });
+                if (error) throw error;
+                useSupabase = true;
+                setCloudStatus('connected');
+                return true;
+            } catch (err) {
+                useSupabase = false;
+                console.error('[premium] testSupabaseConnection error', err);
+                setCloudStatus('offline');
+                return false;
+            }
+        }
+
+        async function loadRecordsFromDatabase() {
+            if (!useSupabase || !currentUser || !currentUser.id) return false;
+            try {
+                setCloudStatus('sync');
+                let query = client.from('myplatform_records')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                if (currentUser && currentUser.id) {
+                    query = query.eq('user_id', currentUser.id);
+                }
+                const { data, error } = await query;
+                if (error) throw error;
+
+                records = data.map(record => ({
+                    id: record.id,
+                    email: record.email_phone,
+                    platform: record.platform,
+                    password: record.password_data,
+                    expiry: record.expiry,
+                    note: record.note
+                }));
+
+                saveRecords();
+                setCloudStatus('connected');
+                return true;
+            } catch (err) {
+                useSupabase = false;
+                setCloudStatus('offline');
+                return false;
+            }
+        }
+
+        async function saveRecordToDatabase(record) {
+            if (!useSupabase || !currentUser || !currentUser.id) return null;
+            try {
+                // Build payload that matches the `myplatform_records` table columns
+                const payload = {
+                    user_id: currentUser.id,
+                    email_phone: record.email,
+                    platform: record.platform,
+                    password_data: record.password,
+                    expiry: record.expiry || null,
+                    note: record.note || null
+                };
+
+                const { data, error } = await client.from('myplatform_records')
+                    .insert([payload])
+                    .select()
+                    .single();
+                if (error) {
+                    throw error;
+                }
+                return data;
+            } catch (err) {
+                // saveRecordToDatabase error — switch to local fallback
+                useSupabase = false;
+                return null;
+            }
+        }
+
+        async function updateRecordInDatabase(record) {
+            if (!useSupabase || !currentUser || !currentUser.id) return false;
+            try {
+                const { error } = await client.from('myplatform_records').update({
+                    email_phone: record.email,
+                    platform: record.platform,
+                    password_data: record.password,
+                    expiry: record.expiry,
+                    note: record.note
+                })
+                .eq('id', record.id)
+                .eq('user_id', currentUser.id);
+
+                if (error) throw error;
+                return true;
+            } catch (err) {
+                useSupabase = false;
+                return false;
+            }
+        }
+
+        function isUuid(value) {
+            return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+        }
+
+        async function deleteRecordFromDatabase(recordId) {
+            if (!useSupabase || !isUuid(recordId) || !currentUser || !currentUser.id) return false;
+            try {
+                const { error } = await client.from('myplatform_records').delete()
+                    .eq('id', recordId)
+                    .eq('user_id', currentUser.id);
+                if (error) throw error;
+                return true;
+            } catch (err) {
+                useSupabase = false;
+                return false;
+            }
+        }
+
+        async function openRazorpayCheckout() {
+            if (!currentUser || !currentUser.id) {
+                alert('Sila login terlebih dahulu sebelum membeli premium.');
+                pendingRecord = null;
+                return;
+            }
+
+            const createOrderUrl = `${BACKEND_URL.replace(/\/$/, '')}/create-order`;
+            console.log('[premium] openRazorpayCheckout BACKEND_URL', BACKEND_URL, { createOrderUrl });
+
+            try {
+                if (typeof Razorpay !== 'function') {
+                    throw new Error('Razorpay Checkout SDK tidak dimuatkan. Sila semak https://checkout.razorpay.com/v1/checkout.js');
+                }
+
+                const response = await fetch(createOrderUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    const errorMessage = `[create-order] ${response.status} ${response.statusText} - ${errorBody}`;
+                    console.error('[premium] create-order response not ok', { status: response.status, statusText: response.statusText, body: errorBody });
+                    alert(`Gagal mencipta order Razorpay. ${errorMessage}`);
+                    throw new Error(errorMessage);
+                }
+
+                const orderData = await response.json().catch(jsonErr => {
+                    throw new Error(`[create-order] Response JSON parse gagal: ${jsonErr.message}`);
+                });
+
+                console.log('[premium] create-order response', orderData);
+                if (!orderData || !orderData.orderId || !orderData.amount || !orderData.currency || !orderData.key) {
+                    const errorMessage = '[create-order] Respons server pembayaran tidak lengkap.';
+                    console.error('[premium] create-order invalid response', orderData);
+                    alert(`${errorMessage} Sila cuba lagi.`);
+                    throw new Error(errorMessage);
+                }
+
+                const options = {
+                    key: orderData.key,
+                    amount: orderData.amount,
+                    currency: orderData.currency,
+                    order_id: orderData.orderId,
+                    name: 'KRYPTON ENTERPRISE',
+                    description: 'MY PLATFORM DATA Lifetime Access',
+                    image: '',
+                    handler: handlePaymentSuccess,
+                    modal: {
+                        ondismiss: function () {
+                            pendingRecord = null;
+                        }
+                    },
+                    theme: {
+                        color: '#7c3aed'
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.open();
+            } catch (err) {
+                console.error('[premium] openRazorpayCheckout error', err);
+                const message = err && err.message ? err.message : 'Ralat tidak diketahui semasa memulakan pembayaran.';
+                alert(`Tidak dapat memulakan pembayaran.
+${message}`);
+                pendingRecord = null;
+            }
+        }
+
+        function copyAllData() {
+            if (!records.length) {
+                alert('Tiada data untuk disalin. Tambah rekod terlebih dahulu.');
+                return;
+            }
+
+            const lines = records.map((record, index) => {
+                return `${index + 1}. Email/Phone: ${record.email}\n` +
+                       `   Platform: ${record.platform}\n` +
+                       `   Password: ${record.password}\n` +
+                       `   Tarikh: ${record.expiry || '-'}\n` +
+                       `   Nota: ${record.note || '-'}\n`;
+            });
+
+            const message = `MY PLATFORM DATA Backup:\n\n${lines.join('\n')}`;
+
+            navigator.clipboard.writeText(message)
+                .then(() => {
+                    alert('Semua data telah disalin ke clipboard. Anda boleh tampal ke mana-mana.');
+                })
+                .catch(() => {
+                    alert('Gagal menyalin ke clipboard. Sila cuba lagi.');
+                });
+        }
+
+        function updateFormMode() {
+            const addBtn = document.getElementById('addRecordBtn');
+            const resetBtn = document.getElementById('resetFormBtn');
+
+            if (editingId !== null) {
+                addBtn.textContent = 'Kemas Kini Data';
+                resetBtn.textContent = 'Batal';
+            } else {
+                addBtn.textContent = 'Tambah Data';
+                resetBtn.textContent = 'Reset';
+            }
+        }
+
+        async function addRecord() {
+            const email = document.getElementById('email').value.trim();
+            const platform = document.getElementById('platform').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const expiry = document.getElementById('expiry').value;
+            const note = document.getElementById('note').value.trim();
+
+            if (!email || !platform || !password) {
+                alert("Sila isi Email/Phone, Platform dan Password!");
+                return;
+            }
+
+            if (editingId !== null) {
+                const target = records.find(r => r.id === editingId);
+                if (target) {
+                    target.email = email;
+                    target.platform = platform;
+                    target.password = await encryptPassword(password);
+                    target.expiry = expiry;
+                    target.note = note;
+                }
+
+                if (useSupabase && target && currentUser && currentUser.id) {
+                    await updateRecordInDatabase(target);
+                }
+
+                editingId = null;
+                saveRecords();
+                resetForm();
+                return;
+            }
+
+            checkPremiumStatus();
+            // Rekod access control: demo users terhad 3 rekod, premium users tanpa had.
+            if (!premiumUser && records.length >= 3) {
+                pendingRecord = { email, platform, password, expiry, note };
+                const upgrade = confirm("Had Rekod Tercapai.\nUpgrade Lifetime Access RM35 untuk rekod tanpa had.");
+
+                if (upgrade) {
+                    openRazorpayCheckout();
+                } else {
+                    pendingRecord = null;
+                }
+                return;
+            }
+
+            const encryptedPassword = await encryptPassword(password);
+            const newRecord = {
+                id: Date.now().toString(),
+                email,
+                platform,
+                password: encryptedPassword,
+                expiry,
+                note
+            };
+
+            records.unshift(newRecord);
+            saveRecords();
+
+            if (useSupabase && currentUser && currentUser.id) {
+                const dbRecord = await saveRecordToDatabase(newRecord);
+                if (dbRecord && dbRecord.id) {
+                    newRecord.id = dbRecord.id;
+                    saveRecords();
+                }
+            }
+
+            resetForm();
+        }
+
+        async function editRecord(id) {
+            const record = records.find(r => r.id === id);
+            if (!record) return;
+
+            editingId = id;
+            document.getElementById('email').value = record.email;
+            document.getElementById('platform').value = record.platform;
+            document.getElementById('password').value = await getPasswordForDisplay(record.password);
+            document.getElementById('expiry').value = record.expiry || '';
+            document.getElementById('note').value = record.note || '';
+            updateFormMode();
+            document.getElementById('email').focus();
+        }
+
+        async function deleteRecord(id) {
+            if (confirm("Padam rekod ini secara kekal?")) {
+                if (editingId === id) {
+                    editingId = null;
+                }
+
+                const deletedFromDb = await deleteRecordFromDatabase(id);
+                if (deletedFromDb) {
+                    // Deleted from Supabase successfully.
+                } else if (useSupabase && !isUuid(id)) {
+                    // Local-only delete for non-UUID id.
+                }
+
+                records = records.filter(r => r.id !== id);
+                saveRecords();
+                updateFormMode();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('email').value = '';
+            document.getElementById('platform').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('expiry').value = '';
+            document.getElementById('note').value = '';
+            editingId = null;
+            updateFormMode();
+        }
+
+        function renderTable(filtered = null) {
+            const tbody = document.getElementById('tableBody');
+            const cardContainer = document.getElementById('recordCards');
+            tbody.innerHTML = '';
+            cardContainer.innerHTML = '';
+            const data = filtered || records;
+
+            document.getElementById('recordCount').textContent = records.length;
+            document.getElementById('filteredCount').textContent = data.length;
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:80px; color:#c4b5fd;">Tiada rekod dijumpai. Tambah rekod baru di atas.</td></tr>`;
+                return;
+            }
+
+            data.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td data-label="Email"><strong>${record.email}</strong></td>
+                    <td data-label="Platform">${record.platform}</td>
+                    <td data-label="Password">
+                        <span id="pass-${record.id}">••••••••</span>
+                        <button type="button" class="toggle-password-btn" style="margin-left:10px; border:none; background:none; cursor:pointer; font-size:18px;">👁</button>
+                    </td>
+                    <td data-label="Tarikh">${record.expiry ? new Date(record.expiry).toLocaleDateString('ms-MY') : '-'}</td>
+                    <td data-label="Nota">${record.note || '-'}</td>
+                    <td data-label="Action">
+                        <div class="action-buttons">
+                            <button type="button" class="edit-btn">EDIT</button>
+                            <button type="button" class="delete-btn">DELETE</button>
+                        </div>
+                    </td>
+                `;
+
+                const toggleBtn = row.querySelector('.toggle-password-btn');
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', () => togglePassword(record.id));
+                }
+
+                const editBtn = row.querySelector('.edit-btn');
+                if (editBtn) {
+                    editBtn.addEventListener('click', () => editRecord(record.id));
+                }
+
+                const deleteBtn = row.querySelector('.delete-btn');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', () => deleteRecord(record.id));
+                }
+
+                tbody.appendChild(row);
+
+                const card = document.createElement('div');
+                card.className = 'record-card';
+                card.innerHTML = `
+                    <h3>${record.platform}</h3>
+                    <p><strong>Email / Phone:</strong> ${record.email}</p>
+                    <p><strong>Password:</strong> <span id="card-pass-${record.id}">••••••••</span></p>
+                    <p><strong>Tarikh:</strong> ${record.expiry ? new Date(record.expiry).toLocaleDateString('ms-MY') : '-'}</p>
+                    <p><strong>Nota:</strong> ${record.note || '-'}</p>
+                    <div class="card-actions">
+                        <button type="button" class="edit-btn">EDIT</button>
+                        <button type="button" class="delete-btn">DELETE</button>
+                        <button type="button" class="toggle-password-btn" style="background:rgba(255,255,255,0.08);">👁 Toggle</button>
+                    </div>
+                `;
+
+                const cardToggleBtn = card.querySelector('.toggle-password-btn');
+                if (cardToggleBtn) {
+                    cardToggleBtn.addEventListener('click', async () => {
+                        const cardPass = document.getElementById(`card-pass-${record.id}`);
+                        if (!cardPass) return;
+                        if (cardPass.textContent === '••••••••') {
+                            cardPass.textContent = await getPasswordForDisplay(record.password);
+                            cardToggleBtn.textContent = '👀';
+                        } else {
+                            cardPass.textContent = '••••••••';
+                            cardToggleBtn.textContent = '👁 Toggle';
+                        }
+                    });
+                }
+
+                const cardEditBtn = card.querySelector('.edit-btn');
+                if (cardEditBtn) {
+                    cardEditBtn.addEventListener('click', () => editRecord(record.id));
+                }
+
+                const cardDeleteBtn = card.querySelector('.delete-btn');
+                if (cardDeleteBtn) {
+                    cardDeleteBtn.addEventListener('click', () => deleteRecord(record.id));
+                }
+
+                cardContainer.appendChild(card);
+            });
+        }
+
+        function filterRecords() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if (!query) return renderTable();
+            
+            const filtered = records.filter(r => 
+                r.email.toLowerCase().includes(query) || 
+                r.platform.toLowerCase().includes(query) ||
+                (r.note && r.note.toLowerCase().includes(query))
+            );
+            renderTable(filtered);
+        }
+
+        async function togglePassword(id){
+            const record = records.find(r => r.id === id);
+            if (!record) return;
+
+            const element = document.getElementById("pass-" + id);
+            if (!element) return;
+            const button = element.nextElementSibling;
+
+            if (element.textContent === "••••••••") {
+                element.textContent = await getPasswordForDisplay(record.password);
+                button.textContent = "👀";
+            } else {
+                element.textContent = "••••••••";
+                button.textContent = "🔑";
+            }
+        }
+
+        function updateDate() {
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US');
+        }
+function toggleInputPassword() {
+    const input = document.getElementById("password");
+    const btn = document.getElementById("showPasswordBtn");
+
+    if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "🙈";
+    } else {
+        input.type = "password";
+        btn.textContent = "👁";
+    }
+}
+
+function toggleAuthPassword() {
+    const input = document.getElementById("authPassword");
+    const btn = document.getElementById("toggleAuthPasswordBtn");
+    if (!input || !btn) return;
+
+    if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "🙈";
+    } else {
+        input.type = "password";
+        btn.textContent = "👁";
+    }
+}
+
+function handleHashChange() {
+    const privacyPage = document.getElementById('privacyPage');
+    const mainApp = document.getElementById('mainAppContent');
+    if (!privacyPage || !mainApp) return;
+    if (location.hash === '#privacy') {
+        mainApp.classList.add('hidden');
+        privacyPage.classList.remove('hidden');
+    } else {
+        privacyPage.classList.add('hidden');
+        mainApp.classList.remove('hidden');
+    }
+}
+
+function navigateHome() {
+    location.hash = '';
+}
+        // Initialize
+        window.onload = async () => {
+            const intro = document.getElementById('introSplash');
+            const mainApp = document.getElementById('mainAppContent');
+            if (mainApp) {
+                mainApp.classList.add('hidden');
+            }
+
+            await testSupabaseConnection();
+            await refreshCurrentUser();
+            await loadRecords();
+            updateDate();
+            updateFormMode();
+            handleHashChange();
+            window.addEventListener('hashchange', handleHashChange);
+
+            if (intro) {
+                setTimeout(() => {
+                    intro.classList.add('intro-fade-out');
+                }, 3500);
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                    if (mainApp) {
+                        mainApp.classList.remove('hidden');
+                    }
+                }, 4200);
+            } else if (mainApp) {
+                mainApp.classList.remove('hidden');
+            }
+        };
+    </script>
+</body>
+</html>
+
